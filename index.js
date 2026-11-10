@@ -4,7 +4,7 @@ async function stage1(){
 	try {
 	  if ( !process.env?.test1 ) throw new Error("No valid test1 propery");
 	  const content = `${process.env.test1}\n`;
-	  await fs.appendFile('test.txt', `test1=${content}`);
+	  if ( !process.env?.test3) await fs.appendFile(`${process.env.updatefile}`, `test3=${content}`);
 	} catch (err) {
 	  console.log(`In stage1, err=${err}`);
 	}
