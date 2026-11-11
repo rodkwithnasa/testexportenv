@@ -1,16 +1,15 @@
 import fs from 'node:fs/promises';
-
+let env = process.env;
 /**
  *	Processes stage 1
  *	@returns {number} next stage
  */
 async function stage1(){
 	try {
-	  if ( !process.env?.test1 ) throw new Error("No valid test1 property");
-	  const content = `${process.env.test1}\n`;
-	  if ( !process.env?.test3) {
-		  process.env.test3 = `${process.env.test1}updated1`;
-		  await fs.appendFile(`${process.env.updatefile}`, `test3=${process.env.test3}\n`);
+	  if ( !env?.test1 ) throw new Error("No valid test1 property");
+	  if ( !env?.test3) {
+		  env.test3 = `${env.test1}updated1`;
+		  await fs.appendFile(`${env.updatefile}`, `test3=${env.test3}\n`);
 	  }
 	  return 2;
 	} catch (err) {
@@ -23,10 +22,10 @@ async function stage1(){
  */
 async function stage2(){
 	try {
-	  if ( !process.env?.test3 ) throw new Error("No valid test3 property");
-	  if ( !process.env?.test4) {
-		  process.env.test4 = `${process.env.test3}updated2`;
-		  await fs.appendFile(`${process.env.updatefile}`, `test4=${process.env.test4}\n`);
+	  if ( !env?.test3 ) throw new Error("No valid test3 property");
+	  if ( !env?.test4) {
+		  env.test4 = `${env.test3}updated2`;
+		  await fs.appendFile(`${env.updatefile}`, `test4=${env.test4}\n`);
 	  }
 	  return 0;
 	} catch (err) {
