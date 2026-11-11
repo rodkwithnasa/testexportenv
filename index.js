@@ -1,19 +1,34 @@
 import fs from 'node:fs/promises';
 
+/**
+ *	Processes stage 1
+ *	@returns {number} next stage
+ */
 async function stage1(){
 	try {
-	  if ( !process.env?.test1 ) throw new Error("No valid test1 propery");
+	  if ( !process.env?.test1 ) throw new Error("No valid test1 property");
 	  const content = `${process.env.test1}\n`;
-	  if ( !process.env?.test3) await fs.appendFile(`${process.env.updatefile}`, `test3=${content}`);
+	  if ( !process.env?.test3) {
+		  process.env.test3 = `${process.env.test1}updated1`;
+		  await fs.appendFile(`${process.env.updatefile}`, `test3=${process.env.test3}\n`);
+	  }
+	  return 2;
 	} catch (err) {
 	  console.log(`In stage1, err=${err}`);
 	}
 }
+/**
+ *	Processes stage 2
+ *	@returns {number} next stage
+ */
 async function stage2(){
 	try {
-	  if ( !process.env?.test3 ) throw new Error("No valid test3 propery");
-	  const content = `${process.env.test3}updated\n`;
-	  if ( !process.env?.test4) await fs.appendFile(`${process.env.updatefile}`, `test4=${content}`);
+	  if ( !process.env?.test3 ) throw new Error("No valid test3 property");
+	  if ( !process.env?.test4) {
+		  process.env.test4 = `${process.env.test3}updated2`;
+		  await fs.appendFile(`${process.env.updatefile}`, `test4=${process.env.test4}\n`);
+	  }
+	  return 0;
 	} catch (err) {
 	  console.log(`In stage2, err=${err}`);
 	}
@@ -24,12 +39,10 @@ try {
 	while (stage){
 		switch (stage) {
 			case 1:
-				await stage1();
-				stage = 2;
+				stage = await stage1();
 				break;
 			case 2:
-				await stage2();
-				stage = 0;
+				stage = await stage2();
 				break;
 			default:
 				console.log(`unknown stage: ${stage}`);
