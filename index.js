@@ -1,4 +1,8 @@
-import fs from 'node:fs/promises';
+import {config} from '@dotenvx/dotenvx';
+// Get the encrypted environment
+config();
+import setEnv from './setEnv.js'
+
 let env = process.env;
 /**
  *	Processes stage 1
@@ -8,8 +12,7 @@ async function stage1(){
 	try {
 	  if ( !env?.test1 ) throw new Error("No valid test1 property");
 	  if ( !env?.test3) {
-		  env.test3 = `${env.test1}updated1`;
-		  await fs.appendFile(`${env.updatefile}`, `test3=${env.test3}\n`);
+		  env.test3 = await setEnv('test3',`${env.test1}updated1`);
 	  }
 	  return 2;
 	} catch (err) {
@@ -24,8 +27,7 @@ async function stage2(){
 	try {
 	  if ( !env?.test3 ) throw new Error("No valid test3 property");
 	  if ( !env?.test4) {
-		  env.test4 = `${env.test3}updated2`;
-		  await fs.appendFile(`${env.updatefile}`, `test4=${env.test4}\n`);
+		  env.test4 = await setEnv( 'test4', `${env.test3}updated2`);
 	  }
 	  return 0;
 	} catch (err) {
