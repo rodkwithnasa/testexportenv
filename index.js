@@ -14,7 +14,7 @@ async function stage1(){
 	  if ( !env?.test3) {
 		  env.test3 = await setEnv('test3',`${env.test1}updated1`);
 	  }
-	  return 2;
+	  return '2';
 	} catch (err) {
 	  console.log(`In stage1, err=${err}`);
 	}
@@ -29,25 +29,27 @@ async function stage2(){
 	  if ( !env?.test4) {
 		  env.test4 = await setEnv( 'test4', `${env.test3}updated2`);
 	  }
-	  return 0;
+	  return '0';
 	} catch (err) {
 	  console.log(`In stage2, err=${err}`);
 	}
 }
-let stage = parseInt(process.argv[2]);
+if ( env?.stage === undefined ) env.stage = await setEnv( 'stage', '1' );
+let newStage;
 
 try {
-	while (stage){
-		switch (stage) {
-			case 1:
-				stage = await stage1();
+	while (env.stage !== '0'){
+		switch (env.stage) {
+			case '1':
+				newStage = await stage1();
 				break;
-			case 2:
-				stage = await stage2();
+			case '2':
+				newStage = await stage2();
 				break;
 			default:
 				console.log(`unknown stage: ${stage}`);
 		}
+		env.stage = await setEnv( 'stage',newStage );
 	}
 	console.log(`end stage 0`);
 } catch (err) {
